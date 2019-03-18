@@ -67,7 +67,7 @@ void write_grid(int t[]){
 
 
 
-int main() {
+int main() { 
 	// On déclare un talbeau de 81 entier, pour les cases vide on asigne la valeur 0.
 	// int t[81] = {	0,	0,	0,		0,	0,	0,		0,	0,	7, 
 	// 				7,  2,  0,		3,	0,	9,		0,	0,	1,
