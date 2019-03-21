@@ -6,6 +6,84 @@ int n = 3;          // taille du cote d'un bloc
 int cotegrille = 9; // longueur d'un cote de la grille
 int cotebloc = 3;   // longeur d'un bloc
 
+void print_grid(int t[]);
+void read_grid(int t[]);
+void write_grid(int t[]);
+int check_gird (int t[]); // Il renvoit 1 si la grille est compatible, 0 sinon.
+int check_element(int tableau[], int longueur_tableau); //Il renvoit 1 si un même élement est présent deux fois dans le tableau, 0 sinon.
+
+int main() {
+	// On déclare un talbeau de 81 entier, pour les cases vide on asigne la valeur 0.
+	// int t[81] = {	0,	0,	0,		0,	0,	0,		0,	0,	7, 
+	// 				7,  2,  0,		3,	0,	9,		0,	0,	1,
+	// 				0,	0,	8,		7,	0,	5,		0,	6,	0,
+
+	// 				5,	0,	2,		8,	9,	0,		0,	0,	0,
+	// 				0,	4,	0,		5,	0,	1,		0,	9,	0,
+	// 				0,	0,	0,		0,	6,	3,		7,	0,	5,
+
+	// 				0,	3,	0,		9,	0,	6,		1,	0,	0,
+	// 				2,	0,	0,		1,	0,	7,		0,	5,	3,
+	// 				9,	0,	0,		0,	0,	0,		0,	0,	0,	};
+	// On déclare une variable length égale à 81 pour avoir pouvoir adapter le code si on doit faire une programme pour des sudoku avec plus de cases 
+	// int t[len];
+	int tableau[4] = {1, 3, 3, 4};
+	int longueur_tableau = 4;
+	printf("%d\n", check_element(tableau, longueur_tableau));
+	return 0;
+}
+
+int check_element(int tableau[], int longueur_tableau){
+	int masque[9];
+	for(int k = 0; k < 9; k++) {
+		masque[k] = 1;
+	}
+	for(int k = 0; k < longueur_tableau; k++) {
+		if(tableau[k] == 0) {
+			continue;
+		} else if(masque[k-1] == 0) {
+			return 1;
+		} else {
+			masque[k-1] = 0;
+		}
+	}
+	return 0;
+}
+
+int check_gird (int t[]) {
+
+//On verifie que les lignes sont compatibles.
+
+	for(int numero_ligne = 1; numero_ligne <= cotegrille; numero_ligne++) { //On fait une boucle pour verifier toutes les lignes, elles sont numérotées de 1 à coter grille.
+			int ligne[cotegrille];
+			int i = 0; //numérote les case du tableau ligne.
+
+			//Dans une premier temps on recupères les élements d'une ligne dans un tableau.
+			for(int k = (numero_ligne - 1)*cotegrille; k <= numero_ligne*cotegrille - 1; k++) { //On parcourt tout les termes de la ligne
+				ligne[i]=t[k];
+				i++;
+			}
+
+			// for(int k = 0; k < cotegrille; k++){
+			// 	printf("[ %d ]", ligne[k]);
+			// }
+			// printf("\n");
+			//check_element(ligne); //Fonction à écrire qui vérifie que il n'y ait pas deux fois le même elements dans un tableau.
+	}
+// En suite on verifie qu'il n'y ait pas deux fois la même valeur dans ce tableau.
+
+
+
+
+// On verifie que les colonnes sont compatibles.
+
+
+
+
+
+// On verifie que les blocs sont compatibles.
+
+}
 
 void print_grid(int t[]) { //Attention a bien mettre les crochets après le t.
 	for (int k = 0; k < len; k++){
@@ -63,26 +141,4 @@ void write_grid(int t[]){
     } else {
          printf("Le fichier n'a pas pu être chargé.\n");
     }
-}
-
-
-
-int main() {
-	// On déclare un talbeau de 81 entier, pour les cases vide on asigne la valeur 0.
-	// int t[81] = {	0,	0,	0,		0,	0,	0,		0,	0,	7, 
-	// 				7,  2,  0,		3,	0,	9,		0,	0,	1,
-	// 				0,	0,	8,		7,	0,	5,		0,	6,	0,
-
-	// 				5,	0,	2,		8,	9,	0,		0,	0,	0,
-	// 				0,	4,	0,		5,	0,	1,		0,	9,	0,
-	// 				0,	0,	0,		0,	6,	3,		7,	0,	5,
-
-	// 				0,	3,	0,		9,	0,	6,		1,	0,	0,
-	// 				2,	0,	0,		1,	0,	7,		0,	5,	3,
-	// 				9,	0,	0,		0,	0,	0,		0,	0,	0,	};
-	// On déclare une variable length égale à 81 pour avoir pouvoir adapter le code si on doit faire une programme pour des sudoku avec plus de cases 
-	int t[len]; 
-	read_grid(t);
-	write_grid(t);
-	return 0;
 }
