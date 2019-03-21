@@ -9,11 +9,13 @@ int cotebloc = 3;   // longeur d'un bloc
 void print_grid(int t[]);
 void read_grid(int t[]);
 void write_grid(int t[]);
-int check_gird (int t[]); // Il renvoit 1 si la grille est compatible, 0 sinon.
+int check_grid (int t[]); // Il renvoit 1 si la grille est compatible, 0 sinon.
 int check_element(int tableau[], int longueur_tableau); //Il renvoit 1 si un même élement est présent deux fois dans le tableau, 0 sinon.
+void solve (int t[]);
+int next_modifiable(int t_save[], int numero_case);
+int previous_modifiable(int t_save[], int numero_case);
 
 int main() {
-	// On déclare un talbeau de 81 entier, pour les cases vide on asigne la valeur 0.
 	int t[81] = {	0,	0,	0,		0,	0,	0,		0,	0,	7, 
 					7,  2,  0,		3,	0,	9,		0,	0,	1,
 					0,	0,	8,		7,	0,	5,		0,	6,	0,
@@ -25,11 +27,65 @@ int main() {
 					0,	3,	0,		9,	0,	6,		1,	0,	0,
 					2,	0,	0,		1,	0,	7,		0,	5,	3,
 					9,	0,	0,		0,	0,	0,		0,	0,	0,	};
-	// On déclare une variable length égale à 81 pour avoir pouvoir adapter le code si on doit faire une programme pour des sudoku avec plus de cases 
-	// int t[len];
-	printf("%d",check_gird(t));
+	int numero_case = 2;
+	printf("%d\n", previous_modifiable(t,numero_case));
 	return 0;
 }
+
+int previous_modifiable(int t_save[], int numero_case){
+	int k = numero_case - 1;
+	while(k >= 0) {
+		if (t_save[k] != 0) {
+			k--;
+		} else {
+			return k;
+		}
+	}
+	if(k = -1) {
+		return -1; //Il n'y a pas de case modifiable avant celle entré
+	}
+}
+
+
+int next_modifiable(int t_save[], int numero_case){
+	int k = numero_case + 1;
+	while(k < len) {
+		if (t_save[k] != 0) {
+			k++;
+		} else {
+			return k;
+		}
+	}
+	if(k = 81) {
+		return -1; //Il n'y a pas de case modifiable après celle entré
+	}
+}
+
+void solve (int t[]){
+	//On commence par vérifier si la sudoku peut être résolue.
+	check_grid(t);
+
+	//On commence par dubliqué le tableau donné en entré.
+	int t_save[len];
+	for(int k = 0; k <= len; k++){
+		t_save[k] = t[k];
+	}
+
+	int k = 0;
+
+	while(k < len){
+			//On tente de  trouver une valeur qui fonctionne pour t[k]
+				//on essai de mettre k en valeur
+				//on teste si le tableau est compatible
+				//si ce n'est pas le cas on tente avec k+1
+			// Si on a trouvé une valeur compatible k=next_modifiable
+			//Sinon on va modifier la dernière case modifier k=previous_modifiable
+			//SI t[premièrecasevide]=9 est qu'on ne peut toujours pas résourde (c'est à dire qu'on revient à devoir la modifier), la grille est insoluble
+	}
+	
+
+}
+
 
 int check_element(int tableau[], int longueur_tableau){
 	int masque[9];
@@ -51,7 +107,7 @@ int check_element(int tableau[], int longueur_tableau){
 	return 0;
 }
 
-int check_gird (int t[]) {
+int check_grid (int t[]) {
 
 //On verifie que les lignes sont compatibles.
 
