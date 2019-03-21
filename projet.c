@@ -14,22 +14,20 @@ int check_element(int tableau[], int longueur_tableau); //Il renvoit 1 si un mê
 
 int main() {
 	// On déclare un talbeau de 81 entier, pour les cases vide on asigne la valeur 0.
-	// int t[81] = {	0,	0,	0,		0,	0,	0,		0,	0,	7, 
-	// 				7,  2,  0,		3,	0,	9,		0,	0,	1,
-	// 				0,	0,	8,		7,	0,	5,		0,	6,	0,
+	int t[81] = {	0,	0,	0,		0,	0,	0,		0,	0,	7, 
+					7,  2,  0,		3,	0,	9,		0,	0,	1,
+					0,	0,	8,		7,	0,	5,		0,	6,	0,
 
-	// 				5,	0,	2,		8,	9,	0,		0,	0,	0,
-	// 				0,	4,	0,		5,	0,	1,		0,	9,	0,
-	// 				0,	0,	0,		0,	6,	3,		7,	0,	5,
+					5,	0,	2,		8,	9,	0,		0,	0,	0,
+					0,	4,	0,		5,	0,	1,		0,	9,	0,
+					0,	0,	0,		0,	6,	3,		7,	0,	5,
 
-	// 				0,	3,	0,		9,	0,	6,		1,	0,	0,
-	// 				2,	0,	0,		1,	0,	7,		0,	5,	3,
-	// 				9,	0,	0,		0,	0,	0,		0,	0,	0,	};
+					0,	3,	0,		9,	0,	6,		1,	0,	0,
+					2,	0,	0,		1,	0,	7,		0,	5,	3,
+					9,	0,	0,		0,	0,	0,		0,	0,	0,	};
 	// On déclare une variable length égale à 81 pour avoir pouvoir adapter le code si on doit faire une programme pour des sudoku avec plus de cases 
 	// int t[len];
-	int tableau[4] = {1, 3, 3, 4};
-	int longueur_tableau = 4;
-	printf("%d\n", check_element(tableau, longueur_tableau));
+	printf("%d",check_gird(t));
 	return 0;
 }
 
@@ -41,12 +39,15 @@ int check_element(int tableau[], int longueur_tableau){
 	for(int k = 0; k < longueur_tableau; k++) {
 		if(tableau[k] == 0) {
 			continue;
-		} else if(masque[k-1] == 0) {
+		} else if(masque[tableau[k]-1] == 0) { //On prend k-1 car dans notre masque la première case est numéroté 0, ce qui décale tout la numérotation.
 			return 1;
 		} else {
-			masque[k-1] = 0;
+			masque[tableau[k]-1] = 0;
 		}
 	}
+	// for(int k = 0; k < 9; k++) {
+	// 	printf("%d", masque[k]);
+	// }
 	return 0;
 }
 
@@ -63,25 +64,50 @@ int check_gird (int t[]) {
 				ligne[i]=t[k];
 				i++;
 			}
-
-			// for(int k = 0; k < cotegrille; k++){
-			// 	printf("[ %d ]", ligne[k]);
-			// }
-			// printf("\n");
-			//check_element(ligne); //Fonction à écrire qui vérifie que il n'y ait pas deux fois le même elements dans un tableau.
+			if(check_element(ligne, cotegrille) == 1) {
+				return 0;
+			}
 	}
-// En suite on verifie qu'il n'y ait pas deux fois la même valeur dans ce tableau.
 
-
-
-
-// On verifie que les colonnes sont compatibles.
-
-
-
-
-
+// On verifie que les colonnes sont compatibles. 
+// on sait que les éléments de la nieme colonne sont congrus a (n - 1) mod 9
+	for(int numero_colonne = 1; numero_colonne <= cotegrille; numero_colonne++) {
+		int colonne[cotegrille];
+		int i = 0;
+		for (int k = (numero_colonne - 1); k <= numero_colonne + 72; k = k + 9) {
+			colonne[i]=t[k];
+			i++;
+		}
+		if(check_element(colonne, cotegrille) == 1) {
+			return 0;
+		}
+	}
 // On verifie que les blocs sont compatibles.
+
+	int bloc[9][9] = {	{0,1,2,9,10,11,18,19,20},
+						{3,4,5,12,13,14,21,22,23},
+						{6,7,8,15,16,17,24,25,26},
+						{27,28,29,36,37,38,45,46,47},
+						{30,31,32,39,40,41,48,49,50},
+						{33,34,35,42,43,44,51,52,53},
+						{54,55,56,63,64,65,72,73,74},
+						{57,58,59,66,67,68,75,76,77},
+						{60,61,62,69,70,71,78,79,80}	};
+	for(int numero_bloc = 1; numero_bloc <= cotegrille; numero_bloc++) {
+		int bloc[cotegrille];
+		int i = 0;
+		for (int k = 0; k <= 8; k++) {
+			bloc[i] = t[numero_bloc,k];
+			i++;
+		}
+		if(check_element(bloc, cotegrille) == 1) {
+			return 0;
+		}
+	}
+
+
+
+return 1;
 
 }
 
