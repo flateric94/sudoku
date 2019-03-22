@@ -11,24 +11,71 @@ void read_grid(int t[]);
 void write_grid(int t[]);
 int check_grid (int t[]); // Il renvoit 1 si la grille est compatible, 0 sinon.
 int check_element(int tableau[], int longueur_tableau); //Il renvoit 1 si un même élement est présent deux fois dans le tableau, 0 sinon.
-void solve (int t[]);
+int solve (int t[]);
 int next_modifiable(int t_save[], int numero_case);
 int previous_modifiable(int t_save[], int numero_case);
 
 int main() {
-	int t[81] = {	0,	0,	0,		0,	0,	0,		0,	0,	7, 
-					7,  2,  0,		3,	0,	9,		0,	0,	1,
-					0,	0,	8,		7,	0,	5,		0,	6,	0,
+	// int t[81] = {	0,	0,	0,		0,	0,	0,		0,	0,	7, 
+	// 				7,  2,  0,		3,	0,	9,		0,	0,	1,
+	// 				0,	0,	8,		7,	0,	5,		0,	6,	0,
 
-					5,	0,	2,		8,	9,	0,		0,	0,	0,
-					0,	4,	0,		5,	0,	1,		0,	9,	0,
-					0,	0,	0,		0,	6,	3,		7,	0,	5,
+	// 				5,	0,	2,		8,	9,	0,		0,	0,	0,
+	// 				0,	4,	0,		5,	0,	1,		0,	9,	0,
+	// 				0,	0,	0,		0,	6,	3,		7,	0,	5,
 
-					0,	3,	0,		9,	0,	6,		1,	0,	0,
-					2,	0,	0,		1,	0,	7,		0,	5,	3,
-					9,	0,	0,		0,	0,	0,		0,	0,	0,	};
-	int numero_case = 2;
-	printf("%d\n", previous_modifiable(t,numero_case));
+	// 				0,	3,	0,		9,	0,	6,		1,	0,	0,
+	// 				2,	0,	0,		1,	0,	7,		0,	5,	3,
+	// 				9,	0,	0,		0,	0,	0,		0,	0,	0,	};
+	int t[len];
+	read_grid(t);
+	print_grid(t); 
+	solve(t);
+	print_grid(t);
+	return 0;
+}
+
+int solve (int t[]){
+	//On commence par vérifier si la sudoku peut être résolue.
+	if (check_grid(t) == 0){
+		printf("La grille n'est pas compatible.\n");
+		return 1;
+	}
+
+	//On commence par dubliqué le tableau donné en entré.
+	int t_save[len];
+	for(int k = 0; k <= len; k++){
+		t_save[k] = t[k];
+	}
+
+	int k = next_modifiable(t_save, 0);
+
+	while(k < len){
+			//On tente de  trouver une valeur qui fonctionne pour t[k]
+				for(int i = t[k] + 1; i <=9; i++) { //On tente tout les valeurs pour t[k], si on doit remonter  (k=previous_modifiable]) il ne faut pas repartir de 0
+					t[k] = i; //on associe à notre terme la valeur de i.
+					printf("t[%d]=%d\n", k, t[k]);
+					if(check_grid(t) == 1) { 
+						k = next_modifiable(t_save, k); //si grille compatible on passe a la case suivante
+						if(k>80 || k < 0) { //condition d'arret qui stop la boucle
+							return 0;
+						}
+						break;
+					} else if (check_grid(t) == 0 && i == 9) { //Si on a essayé tout les valeurs pour t[k] jusqu'à 9 et que ça ne fonctionne toujours pas on modifie la case précédente.
+							t[k] = 0; //On remet k à 0 avant de remonter dans le tableau
+							k = previous_modifiable(t_save, k);
+							printf("k apres previous_modifiable = %d\n", k);
+							printf("t[k] apres previous_modifiable = %d\n", t[k]);
+					}
+					if (t[k] == 9) {
+						k = previous_modifiable(t_save, k);
+					}
+				}
+
+// pb si infinisable (while infi)
+	}
+
+
 	return 0;
 }
 
@@ -42,6 +89,7 @@ int previous_modifiable(int t_save[], int numero_case){
 		}
 	}
 	if(k = -1) {
+		printf("Problème dans previous_modifiable\n");
 		return -1; //Il n'y a pas de case modifiable avant celle entré
 	}
 }
@@ -57,35 +105,10 @@ int next_modifiable(int t_save[], int numero_case){
 		}
 	}
 	if(k = 81) {
+		printf("Problème dans next_modifiable\n");
 		return -1; //Il n'y a pas de case modifiable après celle entré
 	}
 }
-
-void solve (int t[]){
-	//On commence par vérifier si la sudoku peut être résolue.
-	check_grid(t);
-
-	//On commence par dubliqué le tableau donné en entré.
-	int t_save[len];
-	for(int k = 0; k <= len; k++){
-		t_save[k] = t[k];
-	}
-
-	int k = 0;
-
-	while(k < len){
-			//On tente de  trouver une valeur qui fonctionne pour t[k]
-				//on essai de mettre k en valeur
-				//on teste si le tableau est compatible
-				//si ce n'est pas le cas on tente avec k+1
-			// Si on a trouvé une valeur compatible k=next_modifiable
-			//Sinon on va modifier la dernière case modifier k=previous_modifiable
-			//SI t[premièrecasevide]=9 est qu'on ne peut toujours pas résourde (c'est à dire qu'on revient à devoir la modifier), la grille est insoluble
-	}
-	
-
-}
-
 
 int check_element(int tableau[], int longueur_tableau){
 	int masque[9];
