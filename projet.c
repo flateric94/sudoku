@@ -29,7 +29,6 @@ int main() {
 	// 				9,	0,	0,		0,	0,	0,		0,	0,	0,	};
 	int t[len];
 	read_grid(t);
-	print_grid(t); 
 	solve(t);
 	print_grid(t);
 	return 0;
@@ -41,14 +40,20 @@ int solve (int t[]){
 		printf("La grille n'est pas compatible.\n");
 		return 1;
 	}
-
 	//On commence par dubliqué le tableau donné en entré.
 	int t_save[len];
 	for(int k = 0; k <= len; k++){
 		t_save[k] = t[k];
 	}
 
-	int k = next_modifiable(t_save, 0);
+	// On prend le min entre 0 et next_modifiable(t_save, 0)
+	int k; 
+
+	if(t[0] == 0) { //Modifier par Dogmaël
+		k = 0;
+	} else {
+		k = next_modifiable(t_save, 0);
+	}
 
 	while(k < len){
 			//On tente de  trouver une valeur qui fonctionne pour t[k]
@@ -62,13 +67,13 @@ int solve (int t[]){
 						}
 						break;
 					} else if (check_grid(t) == 0 && i == 9) { //Si on a essayé tout les valeurs pour t[k] jusqu'à 9 et que ça ne fonctionne toujours pas on modifie la case précédente.
-							t[k] = 0; //On remet k à 0 avant de remonter dans le tableau
-							k = previous_modifiable(t_save, k);
+							//Modifier par Dogmaël
+							while (t[k] == 9) { //On va remonter juqu'à trouver une case qui n'est pas déja à 9 et on remet à zero toute celles qu'on rencontre en remontant.
+								t[k] = 0; //On remet k à 0 avant de remonter dans le tableau
+								k = previous_modifiable(t_save, k);
+							}
 							printf("k apres previous_modifiable = %d\n", k);
 							printf("t[k] apres previous_modifiable = %d\n", t[k]);
-					}
-					if (t[k] == 9) {
-						k = previous_modifiable(t_save, k);
 					}
 				}
 
@@ -162,8 +167,9 @@ int check_grid (int t[]) {
 		}
 	}
 // On verifie que les blocs sont compatibles.
+//Modifier par Dogmaël
 
-	int bloc[9][9] = {	{0,1,2,9,10,11,18,19,20},
+	int repere_bloc[9][9] = {	{0,1,2,9,10,11,18,19,20},
 						{3,4,5,12,13,14,21,22,23},
 						{6,7,8,15,16,17,24,25,26},
 						{27,28,29,36,37,38,45,46,47},
@@ -172,23 +178,24 @@ int check_grid (int t[]) {
 						{54,55,56,63,64,65,72,73,74},
 						{57,58,59,66,67,68,75,76,77},
 						{60,61,62,69,70,71,78,79,80}	};
-	for(int numero_bloc = 1; numero_bloc <= cotegrille; numero_bloc++) {
-		int bloc[cotegrille];
-		int i = 0;
+
+	int bloc[cotegrille];
+	int curseur; //Il sert à récuperer les valeurs dans repere_bloc pour ensuite faire t[curseur] 
+	for(int numero_bloc = 0; numero_bloc < cotegrille; numero_bloc++) {
 		for (int k = 0; k <= 8; k++) {
-			bloc[i] = t[numero_bloc,k];
-			i++;
+			curseur = repere_bloc[numero_bloc][k];
+			bloc[k] = t[curseur];
 		}
 		if(check_element(bloc, cotegrille) == 1) {
 			return 0;
 		}
 	}
-
-
-
 return 1;
 
 }
+
+
+
 
 void print_grid(int t[]) { //Attention a bien mettre les crochets après le t.
 	for (int k = 0; k < len; k++){
