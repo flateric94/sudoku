@@ -7,7 +7,7 @@ int cotegrille = 9; // longueur d'un cote de la grille
 int cotebloc = 3;   // longeur d'un bloc
 
 void print_grid(int t[]);
-void read_grid(int t[]);
+int read_grid(int t[]);//return(-1) si rencontre un problème dans le type de fichier (caractère ou taille incorrect par exemple), renvoit 0 sinon
 void write_grid(int t[]);
 int check_grid (int t[]); // Il renvoit 1 si la grille est compatible, 0 sinon.
 int check_element(int tableau[], int longueur_tableau); //Il renvoit 1 si un même élement est présent deux fois dans le tableau, 0 sinon.
@@ -28,10 +28,72 @@ int main() {
 	// 				2,	0,	0,		1,	0,	7,		0,	5,	3,
 	// 				9,	0,	0,		0,	0,	0,		0,	0,	0,	};
 	int t[len];
-	read_grid(t);
+	if (read_grid(t) == -1) {
+		return -1;
+	}
+	print_grid(t);
+	printf("%d\n", check_grid(t));
 	solve(t);
 	print_grid(t);
 	return 0;
+}
+
+int read_grid(int t[]) { 
+
+ 	FILE* fichier = NULL;
+    fichier = fopen("test.txt", "r");
+
+	if (fichier == NULL) {
+		printf("Impossible d'ouvrir le fichier test.txt");
+    } else {
+    	int mem[2]; //On mémorise les deux derniers caratères
+		int caractereActuel = 0;
+		int cpt = 0;
+
+		while(caractereActuel != EOF) {
+					caractereActuel = fgetc(fichier); // On lit le caractere
+					mem[0] = mem[1];
+					mem[1] = caractereActuel;
+					printf("mem[0] = %d\nmem[1] = %d\n", mem[0], mem[1]);
+					if( mem[0] > 48 && mem[0] < 58 && mem[1] > 48 && mem[1] < 58 ) { //On vérifie qu'il n'y ait pas deux chiffres NON NULS consécutifs.
+						printf("Le programe contient des nombre à plus de deux chiffres.");
+						return(-1);
+					}
+					if( (caractereActuel >= 33 && caractereActuel < 48) || (caractereActuel > 57) ) { //Si on détecte autre chose que des chiffres entre 0 et 9 ou des espaces et retours à la ligne on renvoit un message d'erreur.
+						printf("Un caractère incorect est présent dans le fichier.\n");
+						return(-1);
+					}
+					if(caractereActuel <= 32 ) {
+						continue; //on ne s'interesse pas à tout ce que n'est pas un chiffre entre 0 et 9
+					} else {
+						// convetir les caractères en entier.
+						// rentrer le caractère dans le tableau.
+						int caractere_converti;
+						caractere_converti = caractereActuel - 48; //On converti les caractères en entiers.
+						t[cpt] = caractere_converti;
+						cpt ++;
+					}
+					if(cpt > 81) { //Si on a plus de 81 chiffres on revoit une erreur 
+						printf("Il y a plus de 81 chffre dans le fichier.\n");
+						return(-1);
+					}
+    	}
+
+    	if(cpt < 81) {
+    		printf("Le fichier ne contient pas asser de chiffre.\n");
+    		return(-1);
+   		 }
+
+   		 //On verifie si le tableau n'est pas déjà plein.
+
+   		 for (int k = 0; k < len; k++) {
+  		  	if(t[k] == 0){return 0;}
+  	 	 }
+    	printf("Le fichier est déjà plein.\n");
+    	return(-1);
+		}
+
+    fclose(fichier);
 }
 
 int solve (int t[]){
@@ -59,7 +121,7 @@ int solve (int t[]){
 			//On tente de  trouver une valeur qui fonctionne pour t[k]
 				for(int i = t[k] + 1; i <=9; i++) { //On tente tout les valeurs pour t[k], si on doit remonter  (k=previous_modifiable]) il ne faut pas repartir de 0
 					t[k] = i; //on associe à notre terme la valeur de i.
-					printf("t[%d]=%d\n", k, t[k]);
+					// printf("t[%d]=%d\n", k, t[k]);
 					if(check_grid(t) == 1) { 
 						k = next_modifiable(t_save, k); //si grille compatible on passe a la case suivante
 						if(k>80 || k < 0) { //condition d'arret qui stop la boucle
@@ -72,8 +134,8 @@ int solve (int t[]){
 								t[k] = 0; //On remet k à 0 avant de remonter dans le tableau
 								k = previous_modifiable(t_save, k);
 							}
-							printf("k apres previous_modifiable = %d\n", k);
-							printf("t[k] apres previous_modifiable = %d\n", t[k]);
+							// printf("k apres previous_modifiable = %d\n", k);
+							// printf("t[k] apres previous_modifiable = %d\n", t[k]);
 					}
 				}
 
@@ -94,7 +156,7 @@ int previous_modifiable(int t_save[], int numero_case){
 		}
 	}
 	if(k = -1) {
-		printf("Problème dans previous_modifiable\n");
+		// printf("Problème dans previous_modifiable\n");
 		return -1; //Il n'y a pas de case modifiable avant celle entré
 	}
 }
@@ -110,7 +172,7 @@ int next_modifiable(int t_save[], int numero_case){
 		}
 	}
 	if(k = 81) {
-		printf("Problème dans next_modifiable\n");
+		// printf("Problème dans next_modifiable\n");
 		return -1; //Il n'y a pas de case modifiable après celle entré
 	}
 }
@@ -204,36 +266,6 @@ void print_grid(int t[]) { //Attention a bien mettre les crochets après le t.
 			printf("\n");
 		}
 	}
-}
-
-void read_grid(int t[]){ 
-//On lui indique dans quel tableau il doit sauvegarder le fichier.
-//le programme ne fonctionne pas si on a des valeurs à deux chiffres.
- 	FILE* fichier = NULL;
-    fichier = fopen("test.txt", "r");
-
-	if (fichier == NULL) {
-		printf("Impossible d'ouvrir le fichier test.txt");
-    }
-    else {
-		int caractereActuel = 0;
-		int cpt = 0;
-		while(caractereActuel != EOF) {
-					caractereActuel = fgetc(fichier); // On lit le caractere
-					if( caractereActuel < 48 || caractereActuel > 57 ) {
-						continue; //on ne s'interesse pas à tout ce que n'est pas un chiffre entre 0 et 9, codé entre 49 et 57 en ascii.
-					} else {
-						// convetir les caractères en entier.
-						// rentrer le caractère dans le tableau.
-						int caractere_converti;
-						caractere_converti = caractereActuel - 48; //On converti les caractères en entiers.
-						t[cpt] = caractere_converti;
-						cpt ++;
-					}
-    	}
-    }
-    fclose(fichier);
-    // print_grid(t);
 }
 
 void write_grid(int t[]){
