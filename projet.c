@@ -19,139 +19,22 @@ int previous_modifiable(int t_save[], int numero_case);
 int check_ligne(int t[], int numero_ligne); //Elle renvoit 1 si la ligne est compatible, O sinon.
 int check_colonne(int t[], int numero_colonne); //Elle renvoit 1 si la colonne est compatible, O sinon.
 int check_bloc(int t[], int numero_bloc); //Elle renvoit 1 si le bloc est compatible, O sinon.
-void check_case(int t[], int numero_element);
-
+int check_case(int t[], int numero_element);
 
 int main() {
 	int t[len];
+	if( read_grid(t) == -1) {
+		printf("La grille ne respect pas le format d'ecriture.\n");
+		return -1;
+	}
 	read_grid(t);
 	print_grid(t);
-	check_case(t, 26);
+	printf("\n\n");
+	solve(t);
+	printf("\n");
+	print_grid(t);	
 	return 0;
 }
-
-int check_ligne(int t[], int numero_ligne) {
-	int ligne[cotegrille];
-	int i = 0; //numérote les case du tableau ligne.
-
-	//Dans une premier temps on recupères les élements d'une ligne dans un tableau.
-	for(int k = (numero_ligne - 1)*cotegrille; k <= numero_ligne*cotegrille - 1; k++) { //On parcourt tout les termes de la ligne
-		ligne[i]=t[k];
-		i++;
-	}
-	if(check_element(ligne, cotegrille) == 1) {
-		return 0;
-	} else {
-		return 1;
-	}
-}
-
-
-int check_colonne(int t[], int numero_colonne) {
-		int colonne[cotegrille];
-		int i = 0;
-		for (int k = (numero_colonne - 1); k <= numero_colonne + 72; k = k + 9) {
-			colonne[i]=t[k];
-			i++;
-		}
-		if(check_element(colonne, cotegrille) == 1) {
-			return 0;
-		} else {
-			return 1;
-		}
-}
-
-int check_bloc(int t[], int numero_bloc) {
-	printf("CC\n");
-	int repere_bloc[9][9] = {	{0,1,2,9,10,11,18,19,20},
-						{3,4,5,12,13,14,21,22,23},
-						{6,7,8,15,16,17,24,25,26},
-						{27,28,29,36,37,38,45,46,47},
-						{30,31,32,39,40,41,48,49,50},
-						{33,34,35,42,43,44,51,52,53},
-						{54,55,56,63,64,65,72,73,74},
-						{57,58,59,66,67,68,75,76,77},
-						{60,61,62,69,70,71,78,79,80}	};
-
-	int bloc[cotegrille];
-	int curseur; //Il sert à récuperer les valeurs dans repere_bloc pour ensuite faire t[curseur] 
-	for (int k = 0; k <= 8; k++) {
-		curseur = repere_bloc[numero_bloc][k];
-		bloc[k] = t[curseur];
-	}
-	printf("jte baise\n");
-	if(check_element(bloc, cotegrille) == 1) {
-		return 0;
-	}
-	return 1;
-}
-
-void check_case (int t[], int numero_element) {
-	int numero_colonne = numero_element % 9 + 1;
-	printf("Numero de colonne = %d\n", numero_colonne);
-	// if(check_colonne(t, numero_colonne) == 0) {
-	// 	return 0;
-	// } else {
-	// 	continue;
-	// }
-
-	int numero_ligne = (numero_element - numero_colonne)/9 +2;
-	printf("Numéro de ligne = %d\n", numero_ligne);
-
-	//Il faut reussir à récuperer le numero de bloc de manière inteligente.
-	
-	// printf("numero bloc = %d\n", numero_bloc);						
-	
-	
-}	
-
-int check_grid (int t[]) {
-
-//On verifie que les lignes sont compatibles.
-	for(int numero_ligne = 1; numero_ligne <= cotegrille; numero_ligne++) { //On fait une boucle pour verifier toutes les lignes, elles sont numérotées de 1 à coter grille.
-		if(check_ligne(t, numero_ligne) == 0) {
-			return 0;
-		} else {
-			continue;
-		}
-	}
-
-// On verifie que les colonnes sont compatibles. 
-	for(int numero_colonne = 1; numero_colonne <= cotegrille; numero_colonne++) { //On sait que les éléments de la nieme colonne sont congrus a (n - 1) mod 9
-		if(check_colonne(t, numero_colonne) == 0) {
-			return 0;
-		} else {
-			continue;
-		}
-	}
-// On verifie que les blocs sont compatibles.
-	for(int numero_bloc = 0; numero_bloc < cotegrille; numero_bloc++) {
-		if(check_bloc(t, numero_bloc) == 0) {
-			return 0;
-		} else {
-			continue;
-		}		
-	}
-return 1;
-}
-
-int check_element(int tableau[], int longueur_tableau){
-	int masque[9];
-	for(int k = 0; k < 9; k++) {
-		masque[k] = 1;
-	}
-	for(int k = 0; k < longueur_tableau; k++) {
-		if(tableau[k] == 0) {
-			continue;
-		} else if(masque[tableau[k]-1] == 0) { //On prend k-1 car dans notre masque la première case est numéroté 0, ce qui décale tout la numérotation.
-			return 1;
-		} else {
-			masque[tableau[k]-1] = 0;
-		}
-	}
-	return 0;
-}
-
 
 int read_grid(int t[]) { 
 
@@ -204,6 +87,126 @@ int read_grid(int t[]) {
     fclose(fichier);
 }
 
+int check_bloc(int t[], int element_debut_bloc) {
+	int bloc[cotegrille];
+	int element_fin_bloc = element_debut_bloc + 2*cotegrille + cotebloc -1;
+	int curseur = 0; //Il sert à récuperer ou sommes nous dans le tableau bloc[]
+	for(int k = element_debut_bloc; k < element_fin_bloc; k = k + cotegrille) {
+		for (int i = 0; i < cotebloc; i++) {
+			bloc[curseur] = t[k + i];
+			curseur++;
+		}
+
+	}
+	if(check_element(bloc, cotegrille) == 1) {
+		return 0;
+	} else {
+		return 1;
+	}
+}
+
+int check_case (int t[], int numero_element) {
+	int numero_colonne = numero_element % 9 + 1;
+	if(check_colonne(t, numero_colonne) == 0) {
+		return 0;
+	}
+
+	int numero_ligne = (numero_element - numero_colonne)/9 +2;
+	if (check_ligne(t,numero_ligne) == 0) {
+		return 0;
+	}
+
+	int colonne_debut_bloc = (numero_colonne-1)/cotebloc * cotebloc + 1;
+	int ligne_debut_bloc = (numero_ligne-1)/cotebloc * cotebloc + 1;
+	int element_debut_bloc = ((ligne_debut_bloc - 1)*cotegrille) - 1 + colonne_debut_bloc;
+	if(check_bloc(t, element_debut_bloc) == 0){
+		return 0;
+	}
+	return 1;
+}	
+
+int check_ligne(int t[], int numero_ligne) { //généralisé à priori
+	int ligne[cotegrille];
+	int i = 0; //numérote les case du tableau ligne.
+
+	//Dans une premier temps on recupères les élements d'une ligne dans un tableau.
+	for(int k = (numero_ligne - 1)*cotegrille; k <= numero_ligne*cotegrille - 1; k++) { //On parcourt tout les termes de la ligne
+		ligne[i]=t[k];
+		i++;
+	}
+	if(check_element(ligne, cotegrille) == 1) {
+		return 0;
+	} else {
+		return 1;
+	}
+}
+
+
+int check_colonne(int t[], int numero_colonne) { //généralisé à priori
+		int colonne[cotegrille];
+		int i = 0;
+		for (int k = (numero_colonne - 1); k <= numero_colonne + (cotegrille * (cotegrille - 1)); k = k + cotegrille) {
+			colonne[i]=t[k];
+			i++;
+		}
+		if(check_element(colonne, cotegrille) == 1) {
+			return 0;
+		} else {
+			return 1;
+		}
+}
+
+int check_grid (int t[]) {
+
+//On verifie que les lignes sont compatibles.
+	for(int numero_ligne = 1; numero_ligne <= cotegrille; numero_ligne++) { //On fait une boucle pour verifier toutes les lignes, elles sont numérotées de 1 à coter grille.
+		if(check_ligne(t, numero_ligne) == 0) {
+			return 0;
+		} else {
+			continue;
+		}
+	}
+
+// On verifie que les colonnes sont compatibles. 
+	for(int numero_colonne = 1; numero_colonne <= cotegrille; numero_colonne++) { //On sait que les éléments de la nieme colonne sont congrus a (n - 1) mod 9
+		if(check_colonne(t, numero_colonne) == 0) {
+			return 0;
+		} else {
+			continue;
+		}
+	}
+// On verifie que les blocs sont compatibles.
+
+	for(int element_debut_bloc = 0; element_debut_bloc < len; element_debut_bloc = element_debut_bloc + cotebloc*cotegrille) {
+		for (int curseur_bloc = element_debut_bloc; curseur_bloc < cotebloc; curseur_bloc = curseur_bloc + cotebloc) {
+			if(check_bloc(t, element_debut_bloc) == 0) {
+				return 0;
+			} else {
+				continue;
+			}
+		}
+				
+	}
+return 1;
+}
+
+int check_element(int tableau[], int longueur_tableau){
+	int masque[9];
+	for(int k = 0; k < 9; k++) {
+		masque[k] = 1;
+	}
+	for(int k = 0; k < longueur_tableau; k++) {
+		if(tableau[k] == 0) {
+			continue;
+		} else if(masque[tableau[k]-1] == 0) { //On prend k-1 car dans notre masque la première case est numéroté 0, ce qui décale tout la numérotation.
+			return 1;
+		} else {
+			masque[tableau[k]-1] = 0;
+		}
+	}
+	return 0;
+}
+
 int solve (int t[]){
 
 	//On commence par vérifier si la sudoku peut être résolue.
@@ -232,13 +235,13 @@ int solve (int t[]){
 		for(int i = t[k] + 1; i <=9; i++) { //On tente tout les valeurs pour t[k], si aucune n'est valide on remonte et k = previous_modifiable.
 			t[k] = i; //On associe à notre terme la valeur de i.
 			compteur_tentatives++;
-			if(check_grid(t) == 1) { 
+			if(check_case(t,k) == 1) { 
 				k = next_modifiable(t_save, k); //Si grille reste compatible on passe a la case suivante
 				if(k>80 || k < 0) { //On arrête la boucle while si on est en dehors du tableau.
 					return 0;
 				}
 				break;
-			} else if (check_grid(t) == 0 && i == 9) { //Si on a essayé tout les valeurs pour t[k] jusqu'à 9 et que ça ne fonctionne toujours pas on modifie la case précédente.
+			} else if (check_case(t, k) == 0 && i == 9) { //Si on a essayé tout les valeurs pour t[k] jusqu'à 9 et que ça ne fonctionne toujours pas on modifie la case précédente.
 				while (t[k] == 9) { //On va remonter juqu'à trouver une case qui n'est pas déja à 9 et on remet à zero toute celles qu'on rencontre en remontant.
 					t[k] = 0; //On remet k à 0 avant de remonter dans le tableau
 					k = previous_modifiable(t_save, k);
