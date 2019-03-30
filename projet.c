@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define TAILLE_MAX 1000
-
 int len = 256;        // taille du tableau modelisant la grille
 int n = 4;          // taille du cote d'un bloc
 int cotegrille = 16; // longueur d'un cote de la grille
@@ -23,93 +21,23 @@ int check_ligne(int t[], int numero_ligne); //Elle renvoit 1 si la ligne est com
 int check_colonne(int t[], int numero_colonne); //Elle renvoit 1 si la colonne est compatible, O sinon.
 int check_bloc(int t[], int numero_bloc); //Elle renvoit 1 si le bloc est compatible, O sinon.
 int check_case(int t[], int numero_element);
-
-void print_tableau (int t[], int len) {
-	printf("[");
-	for(int k = 0; k < len - 1; k++) {
-		printf("%2d,", t[k]);
-	}
-	printf("%2d", t[len - 1]);
-	printf("]");
-}
+void print_tableau  (int t[], int len);
 
 int main() {
 	int t[len];
 	read_grid(t);
+	solve(t);
 	print_grid(t);
-	printf("%d\n",check_grid(t));
 	return 0;
-}
-
-int read_grid(int t[]) { 
-	FILE* fichier = NULL;
-    
-    char chaine[TAILLE_MAX] = "";
- 	int position = 0;
- 	int i = 0;
- 	int tailleligne = 4*cotegrille;
- 	char ligne[tailleligne];
-
-
-    fichier = fopen("test.txt", "r");
- 	
- 	if (fichier == NULL) {
- 		printf("Le fichier est introuvable.\n");
- 		return -1;
- 	} else {
-        while (i < cotegrille) {
-        	int j = 0;
-            fgets(ligne, tailleligne, fichier);
-            printf("Ligne lue : '%s'", ligne);
-            char *token;
-            token = strtok(ligne, " ");
-
-            //Afficher le résultat du découpage
-            while (j < cotegrille) {
-                t[position] = atoi(token);
-                position++;
-                token = strtok(NULL, " ");
-                j++;
-            }
-            printf("\n");
-            i++;
-            //printf("valeur de i : %d, valeur de j : %d\n", i,j);
-        }
-        fclose(fichier);
-	}
-	return 0;
-}
-  
-
-int check_bloc(int t[], int element_debut_bloc) { //le tableau bloc géneré n'est pas bon
-	int bloc[cotegrille];
-	int element_fin_bloc = element_debut_bloc + (cotebloc-1)*cotegrille + cotebloc -1; //bien généralisé
-	int curseur = 0; //Il sert à récuperer ou sommes nous dans le tableau bloc[]
-	for(int k = element_debut_bloc; k < element_fin_bloc; k = k + cotegrille) {
-		for (int i = 0; i < cotebloc; i++) {
-			// printf("k = %d, i= %d\n", k,i); //k+i est bon
-			// printf("t[k+i]=%d\n",t[k + i]);
-			printf("curseur = %d\n", curseur);
-			bloc[curseur] = t[k+i];
-			curseur++;
-			printf("bloc[curseur] = %d\n", bloc[curseur]);
-		}
-		print_tableau(bloc, cotegrille);
-	}
-	if(check_element(bloc, cotegrille) == 1) {
-		return 0;
-	} else {
-		return 1;
-	}
 }
 
 int check_case (int t[], int numero_element) {
-	int numero_colonne = numero_element % cotegrille + 1;
+	int numero_colonne = (numero_element % cotegrille) + 1;
 	if(check_colonne(t, numero_colonne) == 0) {
 		return 0;
 	}
 
-	int numero_ligne = (numero_element - numero_colonne)/cotegrille +2;
+	int numero_ligne = (numero_element - numero_colonne + 1)/cotegrille +1;
 	if (check_ligne(t,numero_ligne) == 0) {
 		return 0;
 	}
@@ -122,6 +50,59 @@ int check_case (int t[], int numero_element) {
 	}
 	return 1;
 }	
+
+int read_grid(int t[]) { //Attention à ne pas mettre de retour à la ligne dans le fichier
+    int tailleligne = 10*cotegrille; //Il faut bien mettre ca !!
+    int position = 0; // repere pour l'injection dans le tableau en parametre
+    int i = 0;
+
+    FILE *fichier = fopen("test.txt", "r");
+    if (fichier != NULL) {
+        while (i < cotegrille) {
+            char ligne[tailleligne];
+            fgets(ligne, tailleligne, fichier); 
+            printf("Ligne lue : '%s'", ligne);
+            char *token;
+            int j = 0;
+            //Découper la chaîne selon les espaces
+            token = strtok(ligne, "  ");
+            //Afficher le résultat du découpage
+            while (j < cotegrille)
+            {
+                t[position] = atoi(token);
+                position++; //parcourt bien tout le tableau
+                token = strtok(NULL, " ");
+                j++;
+				printf("valeur de position = %d\n", position);
+				printf("valeur de j = %d\n", j);
+            }
+			print_grid(t);
+            printf("\n");
+            i++;
+            printf("valeur de i : %d\n", i);
+        }
+        fclose(fichier);
+    }
+    return 1; // Tout s'est bien passe
+}
+
+int check_bloc(int t[], int element_debut_bloc) { //le tableau bloc géneré n'est pas bon
+	int bloc[cotegrille];
+	int element_fin_bloc = element_debut_bloc + (cotebloc-1)*cotegrille + cotebloc -1; //bien généralisé
+	int curseur = 0; //Il sert à récuperer ou sommes nous dans le tableau bloc[]
+	for(int k = element_debut_bloc; k < element_fin_bloc; k = k + cotegrille) {
+		for (int i = 0; i < cotebloc; i++) {
+			bloc[curseur] = t[k+i];
+			curseur++;
+		}
+	}
+	if(check_element(bloc, cotegrille) == 1) {
+		return 0;
+	} else {
+		return 1;
+	}
+}
+
 
 int check_ligne(int t[], int numero_ligne) { //généralisé à priori
 	int ligne[cotegrille];
@@ -175,12 +156,14 @@ int check_grid (int t[]) {
 			continue;
 		}
 	}
-// On verifie que les blocs sont compatibles.
 
-	for(int element_debut_bloc = 0; element_debut_bloc < len; element_debut_bloc = element_debut_bloc + cotebloc*cotegrille) {
-		for (int curseur_bloc = element_debut_bloc; curseur_bloc < cotebloc; curseur_bloc = curseur_bloc + cotebloc) {
-			if(check_bloc(t, element_debut_bloc) == 0) {
-				printf("erreur de bloc, pour element_debut_bloc = %d", element_debut_bloc);
+// On verifie que les blocs sont compatibles.
+//problème dans element début bloc
+	for(int element_debut_bloc = 0; element_debut_bloc < len; element_debut_bloc = element_debut_bloc + cotebloc*cotegrille) { //les débuts_bloc des bloc en début de ligne
+		for (int curseur_bloc = element_debut_bloc; curseur_bloc < element_debut_bloc + cotegrille; curseur_bloc = curseur_bloc + cotebloc) {
+			// printf("\ncurseur bloc = %d\n", curseur_bloc);
+			if(check_bloc(t, curseur_bloc) == 0) {
+				printf("erreur de bloc, pour curseur = %d\n", curseur_bloc);
 				return 0;
 			} else {
 				continue;
@@ -209,13 +192,11 @@ int check_element(int tableau[], int longueur_tableau){
 }
 
 int solve (int t[]){
-	printf("On est dans le solve\n");
 	//On commence par vérifier si la sudoku peut être résolue.
 	if (check_grid(t) == 0){
 		printf("La grille n'est pas compatible.\n");
 		return 1;
 	}
-	printf("On est sorie de check_grid du solves\n");
 	//On commence par dubliqué le tableau donné en entré.
 	int t_save[len];
 	for(int k = 0; k <= len; k++){
@@ -247,6 +228,11 @@ int solve (int t[]){
 					t[k] = 0; //On remet k à 0 avant de remonter dans le tableau
 					k = previous_modifiable(t_save, k);
 				}
+			}
+			if(compteur_tentatives % 10000000 == 0) {
+				printf("compteur_tentatives = %d\n", compteur_tentatives);
+				print_grid(t);
+				printf("\n");
 			}		
 		}
 	}
@@ -284,7 +270,7 @@ int next_modifiable(int t_save[], int numero_case){
 
 void print_grid(int t[]) { //Attention a bien mettre les crochets après le t.
 	for (int k = 0; k < len; k++){
-		printf("%2d", t[k]);
+		printf("%3d", t[k]);
 		if((k+1)%cotegrille == 0) {
 			printf("\n");
 		}
@@ -308,4 +294,13 @@ void write_grid(int t[]){
     } else {
          printf("Le fichier n'a pas pu être chargé.\n");
     }
+}
+
+void print_tableau (int t[], int len) {
+	printf("[");
+	for(int k = 0; k < len - 1; k++) {
+		printf("%2d,", t[k]);
+	}
+	printf("%2d", t[len - 1]);
+	printf("]");
 }
