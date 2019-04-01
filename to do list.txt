@@ -1,0 +1,27 @@
+- tester sur les pc du script.
+pas testé.
+
+- modifier read_grid pour qu'il gère les grilles "bizzares" données par le prof (nombre de cases inncorect, caractère absurde et autre) et les retours à la ligne et espaces intempestif. 
+à tester en généralisé.
+
+- modifier solve pour qu'il gère les grilles vide, impossible et déja remplie
+pas au point.
+
+- rendre le programme interactif (eric)
+pas au point.
+
+- indentation du code avec cpplint (eric)
+pas au point.
+
+- documentation du code avec oxygene (eric)
+pas au point
+
+- optimiser le back-traking avec valeurs_possibles
+
+- modifier le check_grind pour qu'il n'utilise plus les autres check
+
+
+
+
+
+
