@@ -1,5 +1,15 @@
+/**
+ * @file projet.c
+ * @author Eric Cortial et Dogmael Dartigue Peyrout
+ * @brief premier essai du paragraphe principal de la documentation doxygen
+ * @version 1.0
+ * @date 2019-04-01
+ * 
+ * @copyright Copyright (c) 2019
+ * 
+ */
 #include <stdio.h>
-#include <stdlib.h>
+#include <stdlib.h> 
 #include <string.h>
 
 int len = 256;   			// taille du tableau modelisant la grille
