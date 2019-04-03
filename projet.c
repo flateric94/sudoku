@@ -2,7 +2,7 @@
  * @file projet.c
  * @author Eric Cortial et Dogmael Dartigue Peyrou
  * @brief Documentation du projet d'informatique
- * - indentation réalisée grâce à l'indentation automatique de Visual Studio Code.
+ * - indentation réalisée grâce à l'indentation automatique de l'extension CC++ de Microsoft dans Visual Studio Code.
  * - documentation réalisée grâce à l'extension Doxygen de Visual Studio Code.
  * @version 1.2
  * @date 2019-04-01
