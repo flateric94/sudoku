@@ -252,9 +252,21 @@ int main()
 	}
 	else
 	{
+		printf("La grille resolue est : \n");
 		print_grid(t);
-		write_grid(t);
 	}
+	printf("Souhaitez-vous enregistrer le resultat dans un fichier texte ? (Oui : 1/ Non : 0) : \n");
+	int ans;
+	scanf("%d\n", &ans);
+	if (ans == 0) {
+		return 0;
+	}
+	else {
+		
+	}
+
+
+
 	return 0;
 }
 
