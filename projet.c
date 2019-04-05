@@ -213,15 +213,17 @@ int main()
 {
 	printf("Entrez la taille de la grille (un sudoku classique est de taille 3) : \n");
 	scanf("%d", &n);
-	if (n < 2) {
+	if (n < 2)
+	{
 		printf("Erreur : la taille de la grille est trop petite.\n");
 		return 0;
-	} else {
-		len = pow(n,4);
-		cotegrille = pow(n,2);
+	}
+	else
+	{
+		len = pow(n, 4);
+		cotegrille = pow(n, 2);
 		cotebloc = n;
 	}
-
 
 	int t[len];
 	int valeurs_possibles[len][cotegrille];
@@ -235,10 +237,8 @@ int main()
 		}
 	}
 
-
 	printf("Entrez le nom du fichier (avec son extension) :\n");
 	scanf("%254s", &nom_du_fichier);
-
 
 	if (read_grid(t) == 0)
 	{
@@ -258,14 +258,16 @@ int main()
 	int ans;
 	printf("Souhaitez-vous enregistrer le resultat dans un fichier texte ? (Oui : 1/ Non : 0) : \n");
 	scanf("%d", &ans);
-	if (ans == 0) {
+	if (ans == 0)
+	{
 		printf("cc");
 		return 0;
-	} else {
-		//On vas devoir appeler write avec 
+	}
+	else
+	{
+		//On vas devoir appeler write avec
 		write_grid(t);
 	}
-
 
 	return 0;
 }
@@ -306,7 +308,8 @@ int read_grid(int t[]) //Gerer la fichiers contenant trop ou pas asser de chiffr
 			token = strtok(ligne, "  ");
 			while (j < cotegrille)
 			{
-				if (*token != 48 && atoi(token) == 0) { //On verifie que atoi(token) ne soit pas superieur à coter grille.
+				if (*token != 48 && atoi(token) == 0)
+				{ //On verifie que atoi(token) ne soit pas superieur à coter grille.
 					printf("Caractere incorrect.\n");
 					return 0;
 				}
