@@ -244,8 +244,7 @@ int main()
 	{
 		return 0;
 	}
-
-	read_grid(t);
+	printf("La grille lue est : \n");
 	print_grid(t);
 	if (solve(t, valeurs_possibles) == 1)
 	{
