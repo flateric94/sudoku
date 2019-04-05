@@ -220,15 +220,19 @@ int main()
 			cpt++;
 		}
 	}
-	if ( read_grid(t) == 0) {
+	if (read_grid(t) == 0)
+	{
 		return 0;
 	}
 
 	read_grid(t);
 	print_grid(t);
-	if (solve(t, valeurs_possibles) == 1) {
+	if (solve(t, valeurs_possibles) == 1)
+	{
 		return 0;
-	} else {
+	}
+	else
+	{
 		print_grid(t);
 		write_grid(t);
 	}
@@ -254,23 +258,37 @@ int read_grid(int t[])
 	int i = 0;
 
 	FILE *fichier = fopen("test.txt", "r");
-	if (fichier == NULL) {
+	if (fichier == NULL)
+	{
 		printf("Impossible d'ouvrir le fichier test.txt");
 		return 0;
-	} else {
+	}
+	else
+	{
 		while (i < cotegrille)
 		{
 
 			char ligne[tailleligne];
 			fgets(ligne, tailleligne, fichier);
 			printf("ligne = %s\n", ligne); //On verifie qu'il n'y ait pas de caractère interdit (autre que chiffre, espace et retour à la ligne)
-			for (int i = 0; )
+				//On verifie qu'il n'y ait que des chiffres/retour a la ligne/espace.
+				printf("ligne[k] = %d\n",ligne[k]);
 			char *token;
 			int j = 0;
 			token = strtok(ligne, "  ");
 			while (j < cotegrille)
 			{
 				//On verifie que atoi(token) ne soit pas superieur à coter grille.
+				if (ligne[k] == 0 || atoi(ligne[k]) != 0) {
+					continue;
+				} else {
+					printf("Caractere incorrect.");
+					return 0;
+				}
+				// if (atoi(token) < 0 || atoi(token) > cotegrille)
+				// {
+				// 	printf("Valeur d'une case incorrecte");
+				// }
 				t[position] = atoi(token);
 				position++;
 				token = strtok(NULL, " ");
@@ -281,25 +299,30 @@ int read_grid(int t[])
 		fclose(fichier);
 	}
 
-
 	//On verfie que la grille ne soit pas pleine ou vide
 	int marqueur_vide = 0;
 	int marqueur_plein = 0;
-	for(int k = 0; k < len; k++){
-		if (t[k] == 0) { //la grille n'est pas déjà pleine
+	for (int k = 0; k < len; k++)
+	{
+		if (t[k] == 0)
+		{ //la grille n'est pas déjà pleine
 			marqueur_plein = 1;
 		}
-		if (t[k] != 0) { //la grille n'est pas vide
+		if (t[k] != 0)
+		{ //la grille n'est pas vide
 			marqueur_vide = 1;
 		}
-		if (marqueur_vide == 1 && marqueur_plein == 1) {
+		if (marqueur_vide == 1 && marqueur_plein == 1)
+		{
 			break;
 		}
-		if (k == len -1 && marqueur_vide == 0) {
+		if (k == len - 1 && marqueur_vide == 0)
+		{
 			printf("La grille est vide.");
 			return 0;
 		}
-		if ( k == len -1 && marqueur_plein == 0) {
+		if (k == len - 1 && marqueur_plein == 0)
+		{
 			printf("La grille est deja pleine.");
 			return 0;
 		}
