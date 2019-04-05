@@ -266,6 +266,10 @@ int main()
 	else
 	{
 		//On vas devoir appeler write avec
+		char *token;
+		token = strtok(nom_du_fichier, ".");
+		*nom_du_fichier = *strcat(token,".resultat.txt");
+		printf("Le fichier a ete enregistre sous le nom : %s\n", nom_du_fichier);
 		write_grid(t);
 	}
 
@@ -364,7 +368,7 @@ void write_grid(int t[])
 
 	FILE *fichier = NULL;
 
-	fichier = fopen("vide.txt", "w");
+	fichier = fopen(nom_du_fichier, "w");
 
 	if (fichier != NULL)
 	{ //On verifie que vide.txt ait bien été chargé dans la variable fichier
