@@ -368,10 +368,8 @@ void write_grid(int t[])
 
 	if (fichier != NULL)
 	{ //On verifie que vide.txt ait bien été chargé dans la variable fichier
-		printf("CC\n");
 		for (int k = 1; k <= len; k++)
 		{
-			printf("CC1\n");
 			fprintf(fichier, "%3d", t[k - 1]);
 			if (k % (cotegrille) == 0)
 			{
@@ -432,6 +430,17 @@ int solve(int t[], int valeurs_possibles[len][cotegrille])
 	}
 	printf("resultat par methodes humaines :\n");
 	print_grid(t);
+	for (int i = 0; i < len; i++) //si grille resolue par methodes humaines on sort de solve.
+	{
+		if (t[i] == 0)
+		{
+			break;
+		}
+		if (i == len - 1)
+		{
+			return 0;
+		}
+	}
 	printf("\nNous continuons par backtracking.\n");
 	//On finit par un back_traking amelioré.
 
