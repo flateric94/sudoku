@@ -92,7 +92,7 @@ int solve(int t[], int valeurs_possibles[len][cotegrille]); //
  * @brief Programme permettant de vérifier si un élément est present au moins 2 fois dans un même tableau.
  * 
  * @param tableau : tableau de valeurs qu'on veut verifier.
- * @param longueur_tableau : On prend aussi en parametre la longueur de notre tableau : "len" comme cité precedemment. 
+ * @param longueur_tableau : longueur de notre tableau : "len" comme cité precedemment. 
  * @return int : Si aucun élément est présent au moins 2 fois dans le tableau alors la fonction retourne 0, sinon elle retourne 1.
  */
 int check_element(int tableau[], int longueur_tableau);
@@ -118,7 +118,7 @@ int check_colonne(int t[], int numero_colonne);
 /**
  * @brief Programme permettant de verifier qu'un bloc est compatible ou non grace au programme check_element.
  * 
- * @param t : Prend en parametre un tableau de valeurs symbolisant le sudoku.
+ * @param t : tableau de valeurs symbolisant le sudoku.
  * @param numero_bloc : Variable permettant de repérer le bloc ou on se situe.
  * @return int : Retourne 1 si le bloc est compatible, 0 sinon.
  */
