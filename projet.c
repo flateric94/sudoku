@@ -255,16 +255,16 @@ int main()
 		printf("La grille resolue est : \n");
 		print_grid(t);
 	}
-	printf("Souhaitez-vous enregistrer le resultat dans un fichier texte ? (Oui : 1/ Non : 0) : \n");
 	int ans;
-	scanf("%d\n", &ans);
+	printf("Souhaitez-vous enregistrer le resultat dans un fichier texte ? (Oui : 1/ Non : 0) : \n");
+	scanf("%d", &ans);
 	if (ans == 0) {
+		printf("cc");
 		return 0;
+	} else {
+		//On vas devoir appeler write avec 
+		write_grid(t);
 	}
-	else {
-		
-	}
-
 
 
 	return 0;
@@ -365,8 +365,10 @@ void write_grid(int t[])
 
 	if (fichier != NULL)
 	{ //On verifie que vide.txt ait bien été chargé dans la variable fichier
+		printf("CC\n");
 		for (int k = 1; k <= len; k++)
 		{
+			printf("CC1\n");
 			fprintf(fichier, "%3d", t[k - 1]);
 			if (k % (cotegrille) == 0)
 			{
@@ -377,7 +379,7 @@ void write_grid(int t[])
 	}
 	else
 	{
-		printf("Le fichier n'a pas pu être chargé.\n");
+		printf("Le fichier n'a pas pu être sauvegardé.\n");
 	}
 }
 
