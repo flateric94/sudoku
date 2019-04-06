@@ -50,6 +50,11 @@ int *pointeur_sur_compteur_tentative = &compteur_tentatives;
  * 
  */
 int valeur_non_nulle;
+/**
+ * @brief Variable qui va nous permettre de lire un fichier (ici une grille de sudoku). On l'utilise dans le read et le write pour appeler
+ * un fichier et manipuler le resultat pour le sotcker dans un nouveau fichier.
+ * 
+ */
 char nom_du_fichier[255] = "";
 
 //Fonctions demandées dans l'énoncé
@@ -57,12 +62,18 @@ char nom_du_fichier[255] = "";
 /**
  * @brief Programme consistant a afficher une grille de sudoku grace a un tableau a une dimension .
  * 
+ * Ce programme est essentiel dans la conception de notre code, puisqu'il permet d'afficher différents résultats de résolution,
+ * 
  * @param t : tableau de valeurs comprises entre 0 et "len"( par exemple : pour n = 3 on a len = 81), correspondant a la grille qu'on souhaite afficher.
  */
 void print_grid(int t[]);
 
 /**
  * @brief Programme permettant de lire une grille de sudoku depuis un fichier et de la stocker en mémoire.
+ * 
+ * On a adapté le programme de sorte à ce qu'il puisse n'importe quel fichier compris dans le même dossier contenant notre
+ * programme "projet.c", à condittion que ce fichier ne soit pas vide, et qu'il coïncide avec la taille du sudoku préalablement
+ * demandée.
  * 
  * @param t : tableau de valeurs comprises entre 0 et len, qu'on va stocker dans un fichier mémoire.
  * @return int : Le programme retournera 1 si on a reussi a stocker le tableau dans le fichier .
@@ -72,16 +83,24 @@ int read_grid(int t[]); //Attention à ne pas mettre de retour à la ligne dans 
 /**
  * @brief Programme permettant d'écrire une grille de sudoku dans un fichier.
  * 
+ * On detaillera plus tard dans la documentation comment on a pu stocker le sudoku rempli dans un fichier resultat.txt.
+ * 
  * @param t : tableau de valeurs comprises entre 1 et len qu'on va ecrire dans un fichier.
  */
 void write_grid(int t[]);
 
 /**
  * @brief Programme qui va nous permettre de résoudre le sudoku.
- * Dans un premier temps : on vérifie que le sudoku peut etre résolu grace a la fonction check_grid.
- * Dans un second temps : on tente de remplir la grille par des "méthodes humaines".
- * Enfin : si les méthodes humaines n'ont pas permises de resoudre le sudoku entierement, on resout par backtracking.
  * 
+ * Dans un premier temps : on vérifie que le sudoku peut etre résolu grace a la fonction check_grid.
+ * 
+ * Dans un second temps : on tente de remplir la grille par des "méthodes humaines" : on initialise un while à l'infini
+ * pour avoir une boucle qui ne s'arrête que lorsqu'elle atteint notre break; puis on appelle "valeurs_possible" pour tout les éléments
+ * du tableau qui ne sont pas déjà remplis, si pour un certain élément "nb_valeur_non_nulles" de valeurs possibles est égale à 1 : on en a trouvé et 
+ * on attribue la valeur et on recommence notre while, sinon on l'arrête, ce qui signifie qu'il n'y a plus de valeurs possibles pour notre méthode humaine.
+ * 
+ * Enfin : si les méthodes humaines n'ont pas permis de résoudre le sudoku entierement, on resout par backtracking.
+ *  
  * @param t : tableau de valeurs comprises entre 0 et len correspondant au sudoku qu'on va résoudre.
  * @param valeurs_possibles : valeurs que le tableau a 2 dim (valeur_possible) a pu permettre de remplir.
  * @return int : On retourne 0 a la fin de notre programme pour stopper l'éxécution : soit le sudoku est rempli grace aux methodes humaines et/ou au backtracking, soit la grille n'est pas résolvable et un message d'erreur s'affiche.
@@ -93,6 +112,9 @@ int solve(int t[], int valeurs_possibles[len][cotegrille]); //
 /**
  * @brief Programme permettant de vérifier si un élément est present au moins 2 fois dans un même tableau.
  * 
+ * Ce programme nous est essentiel dans la conception de nos check pour ligne, colonne et bloc : il est utilisé
+ * similairement dans chacun d'eux.
+ * 
  * @param tableau : tableau de valeurs qu'on veut verifier.
  * @param longueur_tableau : longueur de notre tableau : "len" comme cité precedemment. 
  * @return int : Si aucun élément est présent au moins 2 fois dans le tableau alors la fonction retourne 0, sinon elle retourne 1.
@@ -101,6 +123,8 @@ int check_element(int tableau[], int longueur_tableau);
 
 /**
  * @brief Programme permettant de vérifier qu'une ligne est compatible ou non grace au programme check_element.
+ * 
+ * On appelle ce programme dans notre check_grid puisque pour vérifier qu'une grille est compatible il faut verifier que toute les lignes le sont.
  * 
  * @param t : tableau de valeurs symbolisant le sudoku. 
  * @param numero_ligne : Variable permettant de repérer la ligne où on se situe.
@@ -111,6 +135,8 @@ int check_ligne(int t[], int numero_ligne);
 /**
  * @brief Programme permettant de vérifier qu'une colonne est compatible ou non grace au programme check_element.
  * 
+ * On appelle ce programme dans notre check_grid puisque pour vérifier qu'une grille est compatible il faut verifier que toute les colonnes le sont.
+ * 
  * @param t : tableau de valeurs symbolisant le sudoku.
  * @param numero_colonne : Variable permettant de reperer la colonne ou on se situe.
  * @return int : Retourne 1 si la colonne est compatible, 0 sinon.
@@ -119,6 +145,8 @@ int check_colonne(int t[], int numero_colonne);
 
 /**
  * @brief Programme permettant de verifier qu'un bloc est compatible ou non grace au programme check_element.
+ * 
+ * On appelle ce programme dans notre check_grid puisque pour vérifier qu'une grille est compatible il faut verifier que toute les blocs le sont.
  * 
  * @param t : tableau de valeurs symbolisant le sudoku.
  * @param numero_bloc : Variable permettant de repérer le bloc ou on se situe.
@@ -129,6 +157,8 @@ int check_bloc(int t[], int numero_bloc);
 /**
  * @brief Programme permettant de vérifier que la grille totale est compatible ou non grace aux programmes permettant de verifier nos lignes, colonnes, et blocs precedents.
  * 
+ * Ce programme nous permet dans le solve de savoir si on peut remplir la grille.
+ * 
  * @param t : tableau de valeurs symbolisant le sudoku.
  * @return int : Retourne 1 si la grille est compatible, 0 sinon.
  */
@@ -136,7 +166,11 @@ int check_grid(int t[]);
 
 /**
  * @brief Programme permettant de vérifier qu'une case d'un bloc est compatible ou non. 
- * On va appeler le programme check_element pour un bloc, une ligne et une colonne donnée.
+ * 
+ * Dans ce programme on appele check_element pour un bloc, une ligne et une colonne donnée : la combinaison de ces 3 conditions 
+ * permet de certifier que la case en question est bonne, ou non.
+ * 
+ * De plus, on utilise ce programme dans notre solve pour remplir la grille grâce au backtracking.
  * 
  * @param t : tableau de valeurs symbolisant le sudoku.
  * @param numero_element : Variable permettant de repérer l'indice de l'élément donné.
@@ -164,8 +198,11 @@ int next_modifiable(int t_save[], int numero_case);
 
 /**
  * @brief Programme permettant de renvoyer pour un élément donné un tableau de valeurs correspondant aux possibilitées de cette case.
- * On va repérer dans quelle ligne, colonne, et bloc l'élément se situe, puis on parcourt les valeurs trouvées dans chacun d'eux. Si une valeur est déjà présente dans la ligne/colonne/bloc : on l'annule, sinon, elle sera affichée dans le resultat. 
- *  
+ * On va repérer dans quelle ligne, colonne, et bloc l'élément se situe, puis on parcourt les valeurs trouvées dans chacun d'eux.
+ * Si une valeur est déjà présente dans la ligne/colonne/bloc : on l'annule, sinon, elle sera affichée dans le résultat. 
+ *
+ * L'utilisation de ce programme se situe dans le solve pour tenter de remplir la grille grâce aux méthodes humaines.
+ *   
  * @param t : tableau de départ.
  * @param valeurs_possibles : On incrémante dans notre main le tableau servant à sauvegarder les possibilitées de chaque case vides de notre sudoku.
  * @param numero_element : Variable permettant de repérer l'indice de l'élément.
@@ -174,6 +211,8 @@ void possibilite_case(int t[], int valeurs_possibles[len][cotegrille], int numer
 
 /**
  * @brief Programme qui pour un élément donné crée un tableau ligne, colonne et bloc dans lequel il met les éléments qui correspondent a la case donnée.
+ * 
+ * On utilise ce programme dans check_case ainsi que dans possibilite_case : il permet en effet de recuperer les éléments de la ligne, colonne et bloc.
  * 
  * @param t : tableau de départ.
  * @param numero_element : Variable permettant de repérer l'indice de l'élément.
@@ -209,6 +248,19 @@ void print_tableau_deux_dim(int valeurs_possibles[len][cotegrille]);
  */
 int nombre_valeurs_non_nulles(int valeurs_possibles[len][cotegrille], int numero_element);
 
+/**
+ * @brief LE MAIN INTERACTIF :
+ * 
+ * Tout d'abord : on demande à l'utilisateur d'entrer la taille de la grille souhaitée ce qui va permettre d'en déduire les autres variables : len, cotegrille, cotebloc.
+ * 
+ * Puis : La saisie du fichier souhaité, il est essentiel de verifier que ce fichier ce situe dans le même endroit que le programme projet.c.
+ * 
+ * On poursuit par la résolution : une par "méthodes humaines" et une autre par "backtracking" (les 2 sont affichée sauf si on a remplie grâce aux méthodes humaines).
+ * 
+ * Enfin : on laisse le choix à l'utilisateur de stocker le résultat du solve dans un fichier [nom_du_fichier]resultat.txt (grâce à la fonction strcat).
+ * 
+ * @return int : 0 quand l'éxécution s'achève.
+ */
 int main()
 {
 	printf("Entrez la taille de la grille (un sudoku classique est de taille 3) : \n");
@@ -260,15 +312,13 @@ int main()
 	scanf("%d", &ans);
 	if (ans == 0)
 	{
-		printf("cc");
 		return 0;
 	}
 	else
 	{
-		//On vas devoir appeler write avec
 		char *token;
 		token = strtok(nom_du_fichier, ".");
-		*nom_du_fichier = *strcat(token,".resultat.txt");
+		*nom_du_fichier = *strcat(token, ".resultat.txt");
 		printf("Le fichier a ete enregistre sous le nom : %s\n", nom_du_fichier);
 		write_grid(t);
 	}
@@ -399,8 +449,7 @@ int solve(int t[], int valeurs_possibles[len][cotegrille])
 
 	// 2- On tente les méthodes humaines
 	while (0 == 0)
-	{ //Pour avoir une boucle qui ne s'arret que quand elle atteint break.
-		//On appel valeurs_possible pour tout les élement du tableau qui ne sont pas déjà remplis
+	{
 		for (int k = 0; k < len; k++)
 		{
 			if (t[k] != 0)
@@ -415,9 +464,6 @@ int solve(int t[], int valeurs_possibles[len][cotegrille])
 				possibilite_case(t, valeurs_possibles, k);
 			}
 		}
-		//On regarde si pour certain element nb_valeur_non_nulles de valeurs possible est égale à 1
-		//Si on en trouve on attribue les valeues et on recommence while
-		//Sinon on arrete le while
 		int cpt = 0;
 		for (int k = 0; k < len; k++)
 		{
