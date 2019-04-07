@@ -716,7 +716,7 @@ int previous_modifiable(int t_save[], int numero_case)
 			return k;
 		}
 	}
-	if (k = -1)
+	if (k == -1)
 	{
 		return -1; //Il n'y a pas de case modifiable avant celle entré
 	}
@@ -736,7 +736,7 @@ int next_modifiable(int t_save[], int numero_case)
 			return k;
 		}
 	}
-	if (k = 81)
+	if (k == 81)
 	{
 		return -1; //Il n'y a pas de case modifiable après celle entrée
 	}
